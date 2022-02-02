@@ -2,18 +2,6 @@ import numpy as np
 from scipy.fftpack import fft, fftfreq
 
 
-class DataController:
-    """
-    Create a data controller from a csv file.
-    It is the backend
-    """
-    x = np.arange(0.0, 5.0, 0.01)
-    y = np.sin(2 * np.pi * x) + 0.5 * np.random.randn(len(x))
-
-    def __init__(self, filename: str):
-        pass
-
-
 def get_3axis_raw_data(filename: str, remove_dc: bool = False) -> list:
     """
     Read 3 axis measurement data from CSV file and return it as tuple of (x, y, z).
@@ -56,31 +44,9 @@ def calculate_rms(data: np.ndarray) -> float:
     return np.sqrt(np.mean(data**2))
 
 
-def generate_sample_array():
-    n = 600
-    measurement_period = 1.0 / 800.0
-    t = np.linspace(0.0, n * measurement_period, n, endpoint=False)
-    x = np.sin(50.0 * 2.0 * np.pi * t) + 0.5 * np.sin(80.0 * 2.0 * np.pi * t)
-    return x
-
-
 def calculate_resultant(x, y, z):
     resultant = []
     for (i, j, k) in zip(x, y, z):
         resultant.append(np.linalg.norm([i, j, k]))
 
     return np.array(resultant)
-
-
-def process_fft_from_csv(filename: str):
-    x, y, z = get_3axis_raw_data(filename)
-
-    x = remove_dc_offset(x)
-    y = remove_dc_offset(y)
-    z = remove_dc_offset(z)
-
-    x_fft, x_freq = calculate_fft(x)
-    y_fft, y_freq = calculate_fft(y)
-    z_fft, z_freq = calculate_fft(z)
-
-    return (x_fft, x_freq), (y_fft, y_freq), (z_fft, z_freq)

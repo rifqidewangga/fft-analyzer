@@ -1,12 +1,12 @@
-from fft_tools import *
-
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from matplotlib.widgets import SpanSelector
-import matplotlib
-
-from tkinter import filedialog as fd
 import tkinter as tk
+from tkinter import filedialog as fd
+
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.figure import Figure
+from matplotlib.widgets import SpanSelector
+
+from fft_tools import *
+from toolbar_controller import *
 
 matplotlib.use('TkAgg')
 
@@ -14,6 +14,14 @@ TIME_DATA_SAMPLE = np.arange(0.0, 5.0, 0.001)
 X_DATA_SAMPLE = np.sin(100 * np.pi * TIME_DATA_SAMPLE) + 0.5 * np.random.randn(len(TIME_DATA_SAMPLE))
 Y_DATA_SAMPLE = np.sin(350 * np.pi * TIME_DATA_SAMPLE) + 0.5 * np.random.randn(len(TIME_DATA_SAMPLE))
 Z_DATA_SAMPLE = np.sin(134 * np.pi * TIME_DATA_SAMPLE) + 0.5 * np.random.randn(len(TIME_DATA_SAMPLE))
+
+AXIS_LABELS = ('x', 'y', 'z')
+
+time_data = TIME_DATA_SAMPLE
+raw_data = [X_DATA_SAMPLE, Y_DATA_SAMPLE, Z_DATA_SAMPLE]
+
+selected_time_data = time_data.copy()
+selected_data = raw_data.copy()
 
 
 def select_file():
@@ -37,8 +45,6 @@ class App(tk.Tk):
 
         self.title('FFT Analyzer')
 
-        self.setup_menu_bar()
-
         self._time_data = TIME_DATA_SAMPLE
         self._raw_data = [X_DATA_SAMPLE, Y_DATA_SAMPLE, Z_DATA_SAMPLE]
 
@@ -53,18 +59,22 @@ class App(tk.Tk):
         self._add_raw_axis_info()
 
         self._raw_lines = []
-        for data in self._raw_data:
-            line, = self._axes_raw.plot(self._time_data, data, linewidth=0.3)
+        for data, label in zip(self._raw_data, AXIS_LABELS):
+            line, = self._axes_raw.plot(self._time_data, data, linewidth=0.3, label=label, )
             self._raw_lines.append(line)
+        self._axes_raw.legend(loc='lower right')
 
         self._axes_fft = self._figure.add_subplot(212)
         self._add_fft_axis_info()
 
         self._fft_lines = []
-        for data in self._selected_data:
+        for data, label in zip(self._selected_data, AXIS_LABELS):
             res_freq, res_fft = calculate_fft(data)
-            line, = self._axes_fft.plot(res_freq, res_fft, linewidth=0.3)
+            line, = self._axes_fft.plot(res_freq, res_fft, linewidth=0.3, label=label)
             self._fft_lines.append(line)
+        self._axes_fft.legend(loc='lower right')
+
+        self._figure.canvas.manager.toolmanager.remove_tool('forward')
 
         self._figure.tight_layout(pad=0.5)
 
@@ -72,21 +82,6 @@ class App(tk.Tk):
                                   props=dict(alpha=0.5, facecolor='red'))
 
         self._figure_canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-
-    def setup_menu_bar(self):
-        menu_bar = tk.Menu(self)
-
-        file_menu = tk.Menu(menu_bar, tearoff=0)
-        file_menu.add_command(label="Open", command=self._update_data_from_csv)
-        file_menu.add_command(label="Exit", command=self.quit)
-
-        help_menu = tk.Menu(menu_bar, tearoff=0)
-        help_menu.add_command(label="About", command=self.quit)
-
-        menu_bar.add_cascade(label="File", menu=file_menu)
-        menu_bar.add_cascade(label="Help", menu=help_menu)
-
-        self.config(menu=menu_bar)
 
     def _update_data_from_csv(self):
         filename = select_file()
@@ -163,7 +158,50 @@ class App(tk.Tk):
         self._axes_fft.set_xlabel('frequency (Hz)')
         self._axes_fft.set_ylabel('magnitude (m/s^2)')
 
+    def _setup_checkbox(self):
+        pass
+
+
+def on_select(self, x_min, x_max):
+    ind_min, ind_max = np.searchsorted(self.time_data, (x_min, x_max))
+    ind_max = min(len(self.time_data) - 1, ind_max)
+
+    selected_time_data = self.time_data[ind_min:ind_max]
+
+    new_selected_data = []
+    for data in raw_data:
+        new_selected_data.append(data[ind_min:ind_max])
+
+    selected_data = new_selected_data
+
+
+def main():
+    fig = plt.figure('FFT Analyzer')
+
+    axes_raw = fig.add_subplot(211)
+    axes_fft = fig.add_subplot(212)
+
+    raw_lines = []
+    for data, label in zip(raw_data, AXIS_LABELS):
+        line, = axes_raw.plot(time_data, data, linewidth=0.3, label=label, )
+        raw_lines.append(line)
+    axes_raw.legend(loc='lower right')
+
+    fft_lines = []
+    for data, label in zip(selected_data, AXIS_LABELS):
+        res_freq, res_fft = calculate_fft(data)
+        line, = axes_fft.plot(res_freq, res_fft, linewidth=0.3, label=label)
+        fft_lines.append(line)
+    axes_fft.legend(loc='lower right')
+
+    span = SpanSelector(axes_raw, on_select, 'horizontal', useblit=True,
+                        props=dict(alpha=0.5, facecolor='red'))
+
+    c = ToolbarController(fig)
+    c.set_callback(OpenFile.callback_key, select_file)
+
+    plt.show()
+
 
 if __name__ == '__main__':
-    app = App()
-    app.mainloop()
+    main()
