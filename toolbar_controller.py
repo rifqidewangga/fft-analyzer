@@ -1,8 +1,7 @@
 from matplotlib.backend_tools import ToolBase
-import matplotlib
 import matplotlib.pyplot as plt
 
-matplotlib.rcParams["toolbar"] = "toolmanager"
+plt.rcParams["toolbar"] = "toolmanager"
 
 CALLBACK_DICT = {}
 
