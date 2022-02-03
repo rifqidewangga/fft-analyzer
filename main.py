@@ -91,10 +91,16 @@ def update_fft_plot(ind_min, ind_max):
 
 def apply_raw_lines_style():
     SUBPLOT_RAW.legend(loc='lower right')
+    SUBPLOT_RAW.set_title(r'$Measurement Raw Data$')
+    SUBPLOT_RAW.set_xlabel(r'$time\ (s)$')
+    SUBPLOT_RAW.set_ylabel(r'$magnitude\ (m/s^{2})$')
 
 
 def apply_fft_lines_style():
     SUBPLOT_FFT.legend(loc='lower right')
+    SUBPLOT_FFT.set_title(r'$FFT$')
+    SUBPLOT_FFT.set_xlabel(r'$frequency\ (Hz)$')
+    SUBPLOT_FFT.set_ylabel(r'$magnitude\ (m/s^{2})$')
 
 
 def create_fft_lines():
@@ -135,6 +141,8 @@ def main():
 
     create_fft_lines()
     apply_fft_lines_style()
+
+    FIG.tight_layout()
 
     span = SpanSelector(SUBPLOT_RAW, on_select, 'horizontal', useblit=True,
                         props=dict(alpha=0.5, facecolor='red'))
