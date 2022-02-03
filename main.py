@@ -1,4 +1,4 @@
-from tkinter import filedialog as fd
+from tkinter import filedialog as fd, simpledialog
 
 from matplotlib.widgets import SpanSelector
 
@@ -41,10 +41,11 @@ def select_file():
     x, y, z = get_3axis_raw_data(filename, remove_dc=True)
     new_raw_data = [x, y, z]
     # prompt measurement period
-    measurement_period = 0.001
+    global MEASUREMENT_PERIOD
+    MEASUREMENT_PERIOD = simpledialog.askfloat("Input", "What is your measurement sample period?")
 
     global TIME_DATA
-    TIME_DATA = generate_time_array(np.array(x), measurement_period=measurement_period)
+    TIME_DATA = generate_time_array(np.array(x), measurement_period=MEASUREMENT_PERIOD)
 
     updated_raw_data_dict = {}
     for axis_key, data in zip(AXIS_KEYS, new_raw_data):
@@ -83,7 +84,7 @@ def update_fft_plot(ind_min, ind_max):
         data = RAW_DATA_DICT[data_key]
 
         selected_data = np.array(data[ind_min:ind_max])
-        freq_trimmed, fft_trimmed = calculate_fft(selected_data)
+        freq_trimmed, fft_trimmed = calculate_fft(selected_data, MEASUREMENT_PERIOD)
         line.set_data(freq_trimmed, fft_trimmed)
 
     FIG.canvas.draw_idle()
@@ -106,7 +107,7 @@ def apply_fft_lines_style():
 def create_fft_lines():
     for axis_key, data_key in zip(AXIS_KEYS, RAW_DATA_DICT):
         data = RAW_DATA_DICT[data_key]
-        res_freq, res_fft = calculate_fft(data)
+        res_freq, res_fft = calculate_fft(data, MEASUREMENT_PERIOD)
         line, = SUBPLOT_FFT.plot(res_freq, res_fft, linewidth=0.3, label=axis_key)
         FFT_LINES_DICT[axis_key] = line
 
