@@ -25,9 +25,9 @@ def remove_dc_offset(data: np.ndarray):
 
 def generate_time_array(data: np.ndarray, measurement_period: float = 0.001):
     n_data = len(data)
-    end_time = n_data * measurement_period
+    end_time = (n_data - 1) * measurement_period
 
-    return np.arange(start=0, stop=end_time, step=measurement_period)
+    return np.linspace(start=0, stop=end_time, num=n_data)
 
 
 def calculate_fft(data: np.ndarray, measurement_period: float = 0.001):
