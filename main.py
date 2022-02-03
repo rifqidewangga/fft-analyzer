@@ -1,4 +1,4 @@
-from tkinter import filedialog as fd, simpledialog
+from tkinter import filedialog as fd, simpledialog, messagebox
 
 from matplotlib.widgets import SpanSelector
 
@@ -38,14 +38,26 @@ def select_file():
         filetypes=filetypes
     )
 
+    return filename
+
+
+def import_csv():
+    user_input = simpledialog.askfloat("Input", "What is your measurement sample period in second?")
+    if user_input <= 0.0:
+        messagebox.showerror("Error", "Please input positive value")
+        return
+
+    global MEASUREMENT_PERIOD
+    MEASUREMENT_PERIOD = user_input
+
+    filename = select_file()
     x, y, z = get_3axis_raw_data(filename, remove_dc=True)
     new_raw_data = [x, y, z]
-    # prompt measurement period
-    global MEASUREMENT_PERIOD
-    MEASUREMENT_PERIOD = simpledialog.askfloat("Input", "What is your measurement sample period?")
 
     global TIME_DATA
     TIME_DATA = generate_time_array(np.array(x), measurement_period=MEASUREMENT_PERIOD)
+    print(len(np.array(x)))
+    print(len(TIME_DATA))
 
     updated_raw_data_dict = {}
     for axis_key, data in zip(AXIS_KEYS, new_raw_data):
@@ -150,7 +162,7 @@ def main():
 
     c = ToolbarController(FIG)
 
-    c.set_callback(OpenFile.callback_key, select_file)
+    c.set_callback(OpenFile.callback_key, import_csv)
     c.set_callback(ToggleXVisibility.callback_key, create_callback('x'))
     c.set_callback(ToggleYVisibility.callback_key, create_callback('y'))
     c.set_callback(ToggleZVisibility.callback_key, create_callback('z'))
