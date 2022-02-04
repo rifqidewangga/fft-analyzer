@@ -43,31 +43,39 @@ def select_file():
 
 def import_csv():
     user_input = simpledialog.askfloat("Input", "What is your measurement sample period in second?")
+
+    if user_input is None:
+        return
     if user_input <= 0.0:
         messagebox.showerror("Error", "Please input positive value")
         return
 
-    global MEASUREMENT_PERIOD
-    MEASUREMENT_PERIOD = user_input
-
     filename = select_file()
-    x, y, z = get_3axis_raw_data(filename, remove_dc=True)
-    new_raw_data = [x, y, z]
+    if len(filename) == 0:
+        return
 
-    global TIME_DATA
-    TIME_DATA = generate_time_array(np.array(x), measurement_period=MEASUREMENT_PERIOD)
-    print(len(np.array(x)))
-    print(len(TIME_DATA))
+    try:
+        x, y, z = get_3axis_raw_data(filename, remove_dc=True)
+        new_raw_data = [x, y, z]
 
-    updated_raw_data_dict = {}
-    for axis_key, data in zip(AXIS_KEYS, new_raw_data):
-        updated_raw_data_dict[axis_key] = np.array(data)
+        updated_raw_data_dict = {}
+        for axis_key, data in zip(AXIS_KEYS, new_raw_data):
+            updated_raw_data_dict[axis_key] = np.array(data)
 
-    global RAW_DATA_DICT
-    RAW_DATA_DICT.update(updated_raw_data_dict)
+        global MEASUREMENT_PERIOD
+        MEASUREMENT_PERIOD = user_input
 
-    update_raw_plot()
-    update_fft_plot(0, -1)
+        global TIME_DATA
+        TIME_DATA = generate_time_array(np.array(x), measurement_period=MEASUREMENT_PERIOD)
+
+        global RAW_DATA_DICT
+        RAW_DATA_DICT.update(updated_raw_data_dict)
+
+        update_raw_plot()
+        update_fft_plot(0, -1)
+
+    except ValueError:
+        messagebox.showerror("Error", "Please check your input, discrepancy in data count between axes")
 
 
 def on_select(x_min, x_max):
@@ -90,7 +98,7 @@ def update_raw_plot():
     FIG.canvas.draw_idle()
 
 
-def update_fft_plot(ind_min, ind_max):
+def update_fft_plot(ind_min: int = 0, ind_max: int = -1):
     for line_key, data_key in zip(FFT_LINES_DICT, RAW_DATA_DICT):
         line = FFT_LINES_DICT[line_key]
         data = RAW_DATA_DICT[data_key]
