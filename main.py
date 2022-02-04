@@ -95,6 +95,9 @@ def update_raw_plot():
 
         line.set_data(TIME_DATA, data)
 
+    SUBPLOT_RAW.relim()
+    SUBPLOT_RAW.autoscale_view(True, True, True)
+
     FIG.canvas.draw_idle()
 
 
@@ -106,6 +109,9 @@ def update_fft_plot(ind_min: int = 0, ind_max: int = -1):
         selected_data = np.array(data[ind_min:ind_max])
         freq_trimmed, fft_trimmed = calculate_fft(selected_data, MEASUREMENT_PERIOD)
         line.set_data(freq_trimmed, fft_trimmed)
+
+    SUBPLOT_FFT.relim()
+    SUBPLOT_FFT.autoscale_view(True, True, True)
 
     FIG.canvas.draw_idle()
 
