@@ -1,9 +1,11 @@
+import os
 from matplotlib.backend_tools import ToolBase
 import matplotlib.pyplot as plt
 
 plt.rcParams["toolbar"] = "toolmanager"
 
 CALLBACK_DICT = {}
+BASE_PATH = os.path.dirname(__file__)
 
 
 class CallBackNotSet(Exception):
@@ -18,32 +20,37 @@ def invoke_callback(key):
 
 
 class OpenFile(ToolBase):
-    image = 'icons/open-file.png'
+    image = f'{BASE_PATH}/icons/open-file.png'
     callback_key = 'OpenFile'
+    description = "Import CSV file"
 
     def trigger(self, sender, event, data=None):
         invoke_callback(self.callback_key)
 
 
 class ToggleXVisibility(ToolBase):
-    image = "icons/x.png"
+    image = f'{BASE_PATH}/icons/x.png'
+    print(image)
     callback_key = 'ToggleXVisibility'
+    description = "Toggle X Axis"
 
     def trigger(self, sender, event, data=None):
         invoke_callback(self.callback_key)
 
 
 class ToggleYVisibility(ToolBase):
-    image = "icons/y.png"
+    image = f'{BASE_PATH}/icons/y.png'
     callback_key = 'ToggleYVisibility'
+    description = "Toggle Y Axis"
 
     def trigger(self, sender, event, data=None):
         invoke_callback(self.callback_key)
 
 
 class ToggleZVisibility(ToolBase):
-    image = "icons/z.png"
+    image = f'{BASE_PATH}/icons/z.png'
     callback_key = 'ToggleZVisibility'
+    description = "Toggle Z Axis"
 
     def trigger(self, sender, event, data=None):
         invoke_callback(self.callback_key)

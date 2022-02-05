@@ -1,3 +1,4 @@
+import tkinter
 from tkinter import filedialog as fd, simpledialog, messagebox
 
 from matplotlib.widgets import SpanSelector
@@ -28,6 +29,9 @@ FFT_LINES_DICT = {}
 
 
 def select_file():
+    root = tkinter.Tk()
+    root.withdraw()
+
     filetypes = (
         ('csv files', '*.csv'),
     )
@@ -163,6 +167,9 @@ def create_callback(key):
 
 
 def main():
+    root = tkinter.Tk()
+    root.withdraw()
+
     create_raw_lines()
     apply_raw_lines_style()
 
@@ -182,6 +189,8 @@ def main():
     c.set_callback(ToggleZVisibility.callback_key, create_callback('z'))
 
     plt.show()
+
+    root.destroy()
 
 
 if __name__ == '__main__':
