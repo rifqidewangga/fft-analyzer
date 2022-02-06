@@ -1,71 +1,78 @@
 import os
 from matplotlib.backend_tools import ToolBase
 import matplotlib.pyplot as plt
+from enum import Enum, auto
 
 plt.rcParams["toolbar"] = "toolmanager"
-
-CALLBACK_DICT = {}
 BASE_PATH = os.path.dirname(__file__)
+
+
+class Tools(Enum):
+    OPEN_FILE = auto()
+    TOGGLE_X_VIS = auto()
+    TOGGLE_Y_VIS = auto()
+    TOGGLE_Z_VIS = auto()
 
 
 class CallBackNotSet(Exception):
     pass
 
 
-def invoke_callback(key):
-    try:
-        CALLBACK_DICT[key]()
-    except KeyError:
-        raise CallBackNotSet(key)
-
-
 class OpenFile(ToolBase):
     image = f'{BASE_PATH}/icons/open-file.png'
-    callback_key = 'OpenFile'
+    callback = None
     description = "Import CSV file"
 
     def trigger(self, sender, event, data=None):
-        invoke_callback(self.callback_key)
+        if self.callback is None:
+            raise CallBackNotSet
+        OpenFile.callback()
 
 
 class ToggleXVisibility(ToolBase):
     image = f'{BASE_PATH}/icons/x.png'
-    print(image)
-    callback_key = 'ToggleXVisibility'
+    callback = None
     description = "Toggle X Axis"
 
     def trigger(self, sender, event, data=None):
-        invoke_callback(self.callback_key)
+        if self.callback is None:
+            raise CallBackNotSet
+        print(self.callback)
+        ToggleXVisibility.callback()
 
 
 class ToggleYVisibility(ToolBase):
     image = f'{BASE_PATH}/icons/y.png'
-    callback_key = 'ToggleYVisibility'
+    callback = None
     description = "Toggle Y Axis"
 
     def trigger(self, sender, event, data=None):
-        invoke_callback(self.callback_key)
+        if self.callback is None:
+            raise CallBackNotSet
+        print(self.callback)
+        ToggleYVisibility.callback()
 
 
 class ToggleZVisibility(ToolBase):
     image = f'{BASE_PATH}/icons/z.png'
-    callback_key = 'ToggleZVisibility'
+    callback = None
     description = "Toggle Z Axis"
 
     def trigger(self, sender, event, data=None):
-        invoke_callback(self.callback_key)
-
-
-visibility_tools_dict = {ToggleXVisibility.callback_key: ToggleXVisibility,
-                         ToggleYVisibility.callback_key: ToggleYVisibility,
-                         ToggleZVisibility.callback_key: ToggleZVisibility}
-
-file_interaction_tools_dict = {OpenFile.callback_key: OpenFile}
+        if self.callback is None:
+            raise CallBackNotSet
+        print(self.callback)
+        ToggleZVisibility.callback()
 
 
 class ToolbarController:
     def __init__(self, figure: plt.Figure):
         self._figure = figure
+
+        self.file_interaction_tools_dict = {Tools.OPEN_FILE: OpenFile}
+        self.visibility_tools_dict = {Tools.TOGGLE_X_VIS: ToggleXVisibility,
+                                      Tools.TOGGLE_Y_VIS: ToggleYVisibility,
+                                      Tools.TOGGLE_Z_VIS: ToggleZVisibility}
 
         self.remove_unnecessary_tools()
         self.create_visibility_toolbar()
@@ -76,8 +83,8 @@ class ToolbarController:
 
         group_name = "axis_visibility"
 
-        for tool_name in visibility_tools_dict:
-            tm.add_tool(tool_name, visibility_tools_dict[tool_name])
+        for tool_name in self.visibility_tools_dict:
+            tm.add_tool(tool_name, self.visibility_tools_dict[tool_name])
             self._figure.canvas.manager.toolbar.add_tool(tm.get_tool(tool_name), group_name)
 
     def create_file_interaction_toolbar(self):
@@ -85,8 +92,8 @@ class ToolbarController:
 
         group_name = "file_interaction"
 
-        for tool_name in file_interaction_tools_dict:
-            tm.add_tool(tool_name, file_interaction_tools_dict[tool_name])
+        for tool_name in self.file_interaction_tools_dict:
+            tm.add_tool(tool_name, self.file_interaction_tools_dict[tool_name])
             self._figure.canvas.manager.toolbar.add_tool(tm.get_tool(tool_name), group_name)
 
     def remove_unnecessary_tools(self):
@@ -94,27 +101,8 @@ class ToolbarController:
         self._figure.canvas.manager.toolmanager.remove_tool("help")
 
     @staticmethod
-    def set_callback(key, func):
-        if key in visibility_tools_dict or key in file_interaction_tools_dict:
-            CALLBACK_DICT[key] = func
-
-
-def test_func():
-    print("Hi!")
-
-
-def test_implementation():
-    fig = plt.figure()
-
-    ax = fig.add_subplot(111)
-    ax.plot([1, 2, 3], label="legend")
-    ax.legend()
-
-    c = ToolbarController(fig)
-    c.set_callback(OpenFile.callback_key, test_func)
-
-    plt.show()
-
-
-if __name__ == '__main__':
-    test_implementation()
+    def set_toolbar_callback():
+        OpenFile.callback = None
+        ToggleXVisibility.callback = None
+        ToggleYVisibility.callback = None
+        ToggleZVisibility.callback = None

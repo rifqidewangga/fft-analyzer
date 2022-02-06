@@ -23,18 +23,18 @@ def remove_dc_offset(data: np.ndarray):
     return data - dc_offset
 
 
-def generate_time_array(data: np.ndarray, measurement_period: float = 0.001):
+def generate_time_array(data: np.ndarray, data_sampling_period: float = 0.001):
     n_data = len(data)
-    end_time = (n_data - 1) * measurement_period
+    end_time = (n_data - 1) * data_sampling_period
 
     return np.linspace(start=0, stop=end_time, num=n_data)
 
 
-def calculate_fft(data: np.ndarray, measurement_period: float = 0.001):
+def calculate_fft(data: np.ndarray, data_sampling_period: float = 0.001):
     n_data = len(data)
 
     data_fft = fft(data)
-    data_freq = fftfreq(n_data, measurement_period)[:n_data//2]
+    data_freq = fftfreq(n_data, data_sampling_period)[:n_data // 2]
     data_fft_trimmed = 2.0/n_data * np.abs(data_fft[0:n_data//2])
 
     return np.array(data_freq), np.array(data_fft_trimmed)
