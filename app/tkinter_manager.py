@@ -27,6 +27,9 @@ class TkinterManager:
             filetypes=filetypes
         )
 
+        if len(filename) == 0:
+            raise UserCancelInput
+
         return filename
 
     @staticmethod

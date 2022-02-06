@@ -1,7 +1,7 @@
 from dataset import *
 from toolbar_controller import *
 from matplotlib.widgets import SpanSelector
-from tkinter_manager import TkinterManager
+from tkinter_manager import TkinterManager, UserCancelInput
 
 
 class FigureManager:
@@ -121,13 +121,14 @@ class FigureManager:
         self.figure.canvas.draw_idle()
 
     def import_csv(self):
-        data_sampling_period = TkinterManager.get_data_sampling_period()
-        filename = TkinterManager.select_file()
-        if len(filename) == 0:
-            return
+        try:
+            data_sampling_period = TkinterManager.get_data_sampling_period()
+            filename = TkinterManager.select_file()
 
-        self.dataset.update_data(filename, data_sampling_period)
-        self.update_figure()
+            self.dataset.update_data(filename, data_sampling_period)
+            self.update_figure()
+        except UserCancelInput:
+            pass
 
     @staticmethod
     def show():
