@@ -71,7 +71,6 @@ class FigureManager:
         self.subplot_fft.set_ylabel(r'$magnitude\ (m/s^{2})$')
 
     def toggle_line_visibility(self, axis: Axis):
-        print(axis)
         raw_line = self.raw_lines_dict[axis]
         fft_line = self.fft_lines_dict[axis]
 

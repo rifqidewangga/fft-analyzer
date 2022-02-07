@@ -2,6 +2,9 @@ import os
 from matplotlib.backend_tools import ToolBase
 import matplotlib.pyplot as plt
 from enum import Enum, auto
+import warnings
+
+warnings.filterwarnings("ignore", ".*Treat the new Tool classes introduced in v1.5 as experimental.*", )
 
 plt.rcParams["toolbar"] = "toolmanager"
 BASE_PATH = os.path.dirname(__file__)
@@ -37,7 +40,6 @@ class ToggleXVisibility(ToolBase):
     def trigger(self, sender, event, data=None):
         if self.callback is None:
             raise CallBackNotSet
-        print(self.callback)
         ToggleXVisibility.callback()
 
 
@@ -49,7 +51,6 @@ class ToggleYVisibility(ToolBase):
     def trigger(self, sender, event, data=None):
         if self.callback is None:
             raise CallBackNotSet
-        print(self.callback)
         ToggleYVisibility.callback()
 
 
@@ -61,7 +62,6 @@ class ToggleZVisibility(ToolBase):
     def trigger(self, sender, event, data=None):
         if self.callback is None:
             raise CallBackNotSet
-        print(self.callback)
         ToggleZVisibility.callback()
 
 
