@@ -1,7 +1,14 @@
-from figure_manager import *
+"""
+Main fft processor app
+"""
+from figure_manager import FigureManager
+from dataset import Dataset
 
 
 class App:
+    """
+    App class for instantiating FigureManager and Dataset
+    """
     def __init__(self, name: str = "My App"):
         self.dataset = Dataset()
         self.figure_manager = FigureManager(name, self.dataset)

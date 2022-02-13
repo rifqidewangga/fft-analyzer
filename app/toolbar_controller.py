@@ -1,3 +1,6 @@
+"""
+This module contains user defined toolbar class for plot visibility toggling and csv import
+"""
 import os
 from matplotlib.backend_tools import ToolBase
 import matplotlib.pyplot as plt

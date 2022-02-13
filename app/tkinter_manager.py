@@ -1,3 +1,6 @@
+"""
+Basic wrapper for tkinter file dialog, simple dialog and messagebox
+"""
 import tkinter
 from tkinter import filedialog as fd, simpledialog, messagebox
 

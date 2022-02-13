@@ -1,10 +1,22 @@
-from dataset import *
-from toolbar_controller import *
+"""
+This is UI part of the program
+This module manage figure from matplotlib, setup toolbars callback and updating plot
+This UI support loading new csv files and show fft result from range of raw measurement data
+"""
+from dataset import Dataset, Axis, FftData
+from toolbar_controller import ToolbarController, OpenFile, ToggleXVisibility, ToggleYVisibility, ToggleZVisibility
 from matplotlib.widgets import SpanSelector
 from tkinter_manager import TkinterManager, UserCancelInput
 
+import numpy as np
+import matplotlib.pyplot as plt
+
 
 class FigureManager:
+    """
+    Matplotlib figure manager for updating plot and interacting with user
+    It supports visibility toggling for plot line and importing csv file to dataset
+    """
     def __init__(self, figure_name: str, dataset: Dataset):
         self.dataset = dataset
         self.figure_name = figure_name
@@ -29,7 +41,11 @@ class FigureManager:
         self.span = SpanSelector(self.subplot_raw, self.on_select, 'horizontal', useblit=True,
                                  props=dict(alpha=0.5, facecolor='red'))
 
-    def set_toolbar_callback(self):
+    def set_toolbar_callback(self) -> None:
+        """
+        Setup callback for each toolbar
+        :return: None
+        """
         OpenFile.callback = self.import_csv
         ToggleXVisibility.callback = self.create_callback(Axis.X)
         ToggleYVisibility.callback = self.create_callback(Axis.Y)

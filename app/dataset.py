@@ -1,6 +1,7 @@
 """
 Provide a container for dataset and fft operation on dataset.
 UI module can ask for a pair of x and y value for plotting.
+This value include raw data measurement and fft calculation result.
 """
 from enum import Enum, auto
 from fft_tools import *
