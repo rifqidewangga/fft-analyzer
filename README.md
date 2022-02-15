@@ -28,6 +28,8 @@ python3 app.py
 ### Toggling plot Visibility
 ![lt text](docs/images/fft-analyzer-toggle-visibility.gif)
 ### Calculate FFT From Area of Interest
-![lt text](docs/images/fft-analyzer-calculate-fft.gif)
-### Importing CSV Data
-![lt text](docs/images/fft-analyzer-import-csv.gif)
+![lt text](docs/images/fft-analyzer-calculate-fft.gif)<br /> 
+By default fft plot is calculated based on all data from dataset. You can calculate fft based on certain area on raw data measurement by selecting it on raw data plot area. This can be useful if you have continuous raw data from different operation, and you need to analyze each section independently.
+### Importing CSV Data 
+![lt text](docs/images/fft-analyzer-import-csv.gif)<br />
+CSV data should have 3 column, and the columns should be sorted from X to Z axis. Measurement period should match data acquisition sampling period.
