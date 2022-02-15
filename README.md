@@ -24,8 +24,10 @@ pip3 install -r requirements.txt
 python3 app.py
 ```
 
-##Features
+## Features
 ### Toggling plot Visibility
 ![lt text](docs/images/fft-analyzer-toggle-visibility.gif)
-### Importing CSV Data
 ### Calculate FFT From Area of Interest
+![lt text](docs/images/fft-analyzer-calculate-fft.gif)
+### Importing CSV Data
+![lt text](docs/images/fft-analyzer-import-csv.gif)
