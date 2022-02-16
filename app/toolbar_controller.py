@@ -72,10 +72,10 @@ class ToolbarController:
     def __init__(self, figure: plt.Figure):
         self._figure = figure
 
-        self.file_interaction_tools_dict = {Tools.OPEN_FILE: OpenFile}
-        self.visibility_tools_dict = {Tools.TOGGLE_X_VIS: ToggleXVisibility,
-                                      Tools.TOGGLE_Y_VIS: ToggleYVisibility,
-                                      Tools.TOGGLE_Z_VIS: ToggleZVisibility}
+        self.file_interaction_tools_dict = {"Tools.OPEN_FILE": OpenFile}
+        self.visibility_tools_dict = {"Tools.TOGGLE_X_VIS": ToggleXVisibility,
+                                      "Tools.TOGGLE_Y_VIS": ToggleYVisibility,
+                                      "Tools.TOGGLE_Z_VIS": ToggleZVisibility}
 
         self.remove_unnecessary_tools()
         self.create_visibility_toolbar()
